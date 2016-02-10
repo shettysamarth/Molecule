@@ -23,7 +23,7 @@ var SampleApp = function() {
     self.setupVariables = function() {
         //  Set the environment variables we need.
         self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-        self.port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+        self.port      = process.env.OPENSHIFT_NODEJS_PORT || 3000;
 
         if (typeof self.ipaddress === "undefined") {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
@@ -121,6 +121,52 @@ var SampleApp = function() {
         }
     };
 
+    self.initializeDatabase = function()
+    {
+        self.mongoose = require('mongoose');
+
+        var  url = 'mongodb://localhost/molecule';
+        if (process.env.OPENSHIFT_MONGODB_DB_URL)
+        {
+            url = process.env.OPENSHIFT_MONGODB_DB_URL +
+                process.env.OPENSHIFT_APP_NAME;
+        }
+        self.mongoose.connect(url);
+        console.log(self.mongoose);
+        self.schemaForCourseDB();
+    }
+
+    self.schemaForCourseDB = function()
+    {
+        var courseSchema = new self.mongoose.Schema({
+            course_id : String,
+            course_name: String,
+            modules:[]
+        },{collection: "course"});
+
+        self.courseCollection = self.mongoose.model("course", courseSchema);
+
+        var skillSchema = new self.mongoose.Schema({
+            skill_name: String,
+        },{collection: "skill"});
+
+        self.skillCollection = self.mongoose.model("skill", skillSchema);
+
+        var outcomeSchema = new self.mongoose.Schema({
+            outcome_name: String,
+            skills:[]
+        },{collection: "outcome"});
+
+        self.outcomeCollection = self.mongoose.model("outcome", outcomeSchema);
+
+        var moduleSchema = new self.mongoose.Schema({
+            module_name: String,
+            outcomes:[]
+        },{collection: "module"});
+
+        self.moduleCollection = self.mongoose.model("module", moduleSchema);
+
+    }
 
     /**
      *  Initializes the sample application.
@@ -132,6 +178,7 @@ var SampleApp = function() {
 
         // Create the express server and routes.
         self.initializeServer();
+        self.initializeDatabase();
     };
 
 
@@ -156,4 +203,5 @@ var SampleApp = function() {
 var zapp = new SampleApp();
 zapp.initialize();
 zapp.start();
+
 
