@@ -2,7 +2,15 @@ var express = require('express');
 var app = express();
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/molecule');
+
+var  url = 'mongodb://localhost/molecule';
+     if (process.env.OPENSHIFT_MONGODB_DB_URL)
+     {
+         url = process.env.OPENSHIFT_MONGODB_DB_URL +
+             process.env.OPENSHIFT_APP_NAME;
+     }
+
+mongoose.connect(url);
 
 var courseModel = courseModel();
 
@@ -147,4 +155,4 @@ function courseModel()
 {
     var courseModel;
 }
-app.listen(3000);
+app.listen(process.env.OPENSHIFT_NODEJS_PORT||3000);
