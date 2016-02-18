@@ -145,6 +145,6 @@ function getJsonObject(id, collection)
 
 function courseModel()
 {
-
+    var courseModel;
 }
 app.listen(3000);
