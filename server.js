@@ -313,7 +313,6 @@
          //Module Info
          self.app.get('/rest/module', function(req, res)
          {
-             res.setHeader('Access-Control-Allow-Origin', "*");
              coursesCollection.find({"_id" : "56cf02d55ae56c248a00000f"}).lean().exec(function(err, results)
              {
                  var listOfModuleDetails = results[0]["modules"];
