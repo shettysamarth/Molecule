@@ -40,7 +40,6 @@
      // Pass to next layer of middleware
      next();
  });
- app.use(express.static(__dirname+'/public'));
 
  /**
   *  Define the sample application.
