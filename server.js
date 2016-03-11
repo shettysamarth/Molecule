@@ -8,12 +8,16 @@
  var multer        = require('multer');
  var cookieParser = require('cookie-parser');
  var session = require('express-session');
-
  var mongoose = require('mongoose');
  var ipaddress 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
  var port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000;
  var  url = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/molecule';
  mongoose.connect(url);
+
+ app.listen(port, ipaddress, function() {
+     console.log('%s: Node server started on %s:%d ...',
+         Date(Date.now() ), self.ipaddress, self.port);
+ });
 
  app.use(express.static(__dirname + '/public'));//host the static content in public directory
  app.use(bodyParser.json()); // for parsing application/json
@@ -449,11 +453,7 @@
      
      
      
-     /*************************/
 
-     /**
-      *  Initializes the sample application.
-      */
      self.initialize = function() {
          //self.populateCache();
          //self.setupTerminationHandlers();
@@ -465,10 +465,8 @@
 
      self.start = function() {
          //  Start the app on the specific interface (and port).
-         app.listen(port, ipaddress, function() {
-             console.log('%s: Node server started on %s:%d ...',
-                         Date(Date.now() ), self.ipaddress, self.port);
-         });
+
+
      };
 
  };   /*  Sample Application.  */
