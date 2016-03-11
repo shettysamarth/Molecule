@@ -4,8 +4,8 @@
  var express = require('express');
  var app = express();
  var fs      = require('fs');
- //var bodyParser    = require('body-parser');
- //var multer        = require('multer');
+ var bodyParser    = require('body-parser');
+ var multer        = require('multer');
  //var cookieParser = require('cookie-parser');
  //var session = require('express-session');
  var mongoose = require('mongoose');
@@ -24,9 +24,9 @@
 
 
  app.use(express.static(__dirname + '/public'));//host the static content in public directory
- //app.use(bodyParser.json()); // for parsing application/json
- //app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
- //app.use(multer()); //for parsing multipart/form-data
+ app.use(bodyParser.json()); // for parsing application/json
+ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+ app.use(multer()); //for parsing multipart/form-data
  //app.use(session({ secret: process.env.MOLECULESESSIONSECRETKEY || "secondaryKey" }));
  //app.use(cookieParser());
 
