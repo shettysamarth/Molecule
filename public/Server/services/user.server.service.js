@@ -22,7 +22,7 @@ module.exports = function(app, userModel){
                 {
                     console.log(user);
                     req.session.currentUser = user;
-                    res.json(user);
+                    res.send(user);
                 }
 
             }, function(err) {

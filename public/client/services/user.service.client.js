@@ -22,8 +22,15 @@
                 username : username,
                 password : password
             };
+
+            var req = {
+                method: 'POST',
+                url: '/api/molecule/login',
+
+                data: { user: user }
+            }
             var deferred = $q.defer();
-            $http.post("/api/molecule/login", user)
+            $http(req)
                 .then(function(user12){
                     console.log("inside client side" + user12);
                     deferred.resolve(user12);
@@ -38,6 +45,8 @@
 
 
         function  createUser(user, callback){
+
+
             var deferred = $q.defer();
             $http.post("/api/project/user/", userObj)
                 .then(function successCallBack(users){
