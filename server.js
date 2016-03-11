@@ -475,8 +475,8 @@
 
  require("./public/server/app.js")(app, mongoose);
 
- var zapp = new SampleApp();
- zapp.initialize();
- zapp.start();
+ //var zapp = new SampleApp();
+ //zapp.initialize();
+ //zapp.start();
 
 
