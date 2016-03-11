@@ -24,7 +24,7 @@
  app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
  app.use(multer()); //for parsing multipart/form-data
  app.use(session({ secret: process.env.MOLECULESESSIONSECRETKEY || "secondaryKey" }));
- app.use(cookieParser())
+ app.use(cookieParser());
 
  app.use(function (req, res, next) {
 
@@ -45,21 +45,17 @@
      next();
  });
 
- /**
-  *  Define the sample application.
-  */
- var SampleApp = function() {
-
-     //  Scope.
-     var self = this;
-
-     self.initializeDatabase = function() {
 
 
 
 
 
-         app.get('/', function(req, res){
+
+
+
+
+
+         app.get('/', function(req, res) {
              res.send('hello world');
          });
 
@@ -70,7 +66,7 @@
              modules:[]
          },{collection: "courses"});
 
-         var coursesCollection = mongoose.model("courses", coursesSchema);
+        var coursesCollection = mongoose.model("courses", coursesSchema);
 		
 		var ModuleSchema = new mongoose.Schema({
              name : String,
@@ -447,36 +443,3 @@
              });
 
          }
-     }
-     
-
-     
-     
-     
-
-     initialize = function() {
-         //self.populateCache();
-         //self.setupTerminationHandlers();
-
-         // Create the express server and routes.
-         initializeDatabase();
-     };
-
-
-     start = function() {
-         //  Start the app on the specific interface (and port).
-
-
-     };
-
- };   /*  Sample Application.  */
-
-
-
- require("./public/server/app.js")(app, mongoose);
-
- //var zapp = new SampleApp();
- //zapp.initialize();
- //zapp.start();
-
-
