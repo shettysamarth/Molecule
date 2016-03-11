@@ -16,7 +16,7 @@
 
  app.listen(port, ipaddress, function() {
      console.log('%s: Node server started on %s:%d ...',
-         Date(Date.now() ), self.ipaddress, self.port);
+         Date(Date.now() ), ipaddress, port);
  });
 
  app.use(express.static(__dirname + '/public'));//host the static content in public directory
@@ -454,16 +454,16 @@
      
      
 
-     self.initialize = function() {
+     initialize = function() {
          //self.populateCache();
          //self.setupTerminationHandlers();
 
          // Create the express server and routes.
-         self.initializeDatabase();
+         initializeDatabase();
      };
 
 
-     self.start = function() {
+     start = function() {
          //  Start the app on the specific interface (and port).
 
 
