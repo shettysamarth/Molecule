@@ -24,11 +24,11 @@
 
 
  app.use(express.static(__dirname + '/public'));//host the static content in public directory
- //app.use(bodyParser.json()); // for parsing application/json
- //app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
- //app.use(multer()); //for parsing multipart/form-data
+ app.use(bodyParser.json()); // for parsing application/json
+ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+ app.use(multer()); //for parsing multipart/form-data
  app.use(session({ secret: process.env.MOLECULESESSIONSECRETKEY || "secondaryKey" }));
- //app.use(cookieParser());
+ app.use(cookieParser());
 
  app.use(function (req, res, next) {
 
