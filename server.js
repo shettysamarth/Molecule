@@ -3,10 +3,10 @@
  //  OpenShift sample Node application
  var express = require('express');
  var app = express();
- //var fs      = require('fs');
- //var bodyParser    = require('body-parser');
- //var multer        = require('multer');
- //var cookieParser = require('cookie-parser');
+ var fs      = require('fs');
+ var bodyParser    = require('body-parser');
+ var multer        = require('multer');
+ var cookieParser = require('cookie-parser');
  var session = require('express-session');
  var mongoose = require('mongoose');
  var ipaddress 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
