@@ -2,8 +2,45 @@
 
  //  OpenShift sample Node application
  var express = require('express');
+ var app = express();
  var fs      = require('fs');
+ var bodyParser    = require('body-parser');
+ var multer        = require('multer');
+ var cookieParser = require('cookie-parser');
+ var session = require('express-session');
 
+ var mongoose = require('mongoose');
+ var ipaddress 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+ var port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000;
+ var  url = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/molecule';
+ mongoose.connect(url);
+
+ app.use(express.static(__dirname + '/public'));//host the static content in public directory
+ app.use(bodyParser.json()); // for parsing application/json
+ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+ app.use(multer()); //for parsing multipart/form-data
+ app.use(session({ secret: process.env.MOLECULESESSIONSECRETKEY || "secondaryKey" }));
+ app.use(cookieParser())
+
+ app.use(function (req, res, next) {
+
+     // Website you wish to allow to connect
+     res.setHeader('Access-Control-Allow-Origin', "*");
+
+     // Request methods you wish to allow
+     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+     // Request headers you wisgto allow
+     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+     // Set to true if you need the website to include cookies in the requests sent
+     // to the API (e.g. in case you use sessions)
+     res.setHeader('Access-Control-Allow-Credentials', true);
+
+     // Pass to next layer of middleware
+     next();
+ });
+ app.use(express.static(__dirname+'/public'));
 
  /**
   *  Define the sample application.
@@ -13,148 +50,13 @@
      //  Scope.
      var self = this;
 
-
-     /*  ================================================================  */
-     /*  Helper functions.                                                 */
-     /*  ================================================================  */
-
-     /**
-      *  Set up server IP address and port # using env variables/defaults.
-      */
-     self.setupVariables = function() {
-         //  Set the environment variables we need.
-         self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-         self.port      = process.env.OPENSHIFT_NODEJS_PORT || 3000;
-
-         if (typeof self.ipaddress === "undefined") {
-             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
-             //  allows us to run/test the app locally.
-             console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
-             self.ipaddress = "127.0.0.1";
-         };
-     };
-
-
-     /**
-      *  Populate the cache.
-      */
-     //self.populateCache = function() {
-     //    if (typeof self.zcache === "undefined") {
-     //        self.zcache = { 'index.html': '' };
-     //    }
-     //
-     //    //  Local cache for static content.
-     //    self.zcache['index.html'] = fs.readFileSync('./index.html');
-     //};
-     //
-     //
-     ///**
-     // *  Retrieve entry (content) from cache.
-     // *  @param {string} key  Key identifying content to retrieve from cache.
-     // */
-     //self.cache_get = function(key) { return self.zcache[key]; };
-     //
-     //
-     ///**
-     // *  terminator === the termination handler
-     // *  Terminate server on receipt of the specified signal.
-     // *  @param {string} sig  Signal to terminate on.
-     // */
-     //self.terminator = function(sig){
-     //    if (typeof sig === "string") {
-     //       console.log('%s: Received %s - terminating sample app ...',
-     //                   Date(Date.now()), sig);
-     //       process.exit(1);
-     //    }
-     //};
-
-
-     /**
-      *  Setup termination handlers (for exit and a list of signals).
-      */
-     self.setupTerminationHandlers = function(){
-         //  Process on exit and signals.
-         process.on('exit', function() { self.terminator(); });
-
-         // Removed 'SIGPIPE' from the list - bugz 852598.
-         ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
-          'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-         ].forEach(function(element, index, array) {
-             process.on(element, function() { self.terminator(element); });
-         });
-     };
-
-
-     /*  ================================================================  */
-     /*  App server functions (main app logic here).                       */
-     /*  ================================================================  */
-
-     /**
-      *  Create the routing table entries + handlers for the application.
-      */
-     //self.createRoutes = function() {
-     //    self.routes = { };
-     //
-     //    self.routes['/asciimo'] = function(req, res) {
-     //        var link = "http://i.imgur.com/kmbjB.png";
-     //        res.send("<html><body><img src='" + link + "'></body></html>");
-     //    };
-     //
-     //    self.routes['/'] = function(req, res) {
-     //        res.setHeader('Content-Type', 'text/html');
-     //        res.send(self.cache_get('index.html') );
-     //    };
-     //};
-
-
-     /**
-      *  Initialize the server (express) and create the routes and register
-      *  the handlers.
-      */
-     self.initializeServer = function() {
-         //self.createRoutes();
-         self.app = express();
-
-         //  Add handlers for the app (from the routes).
-         //for (var r in self.routes) {
-         //    self.app.get(r, self.routes[r]);
-         //}
-     };
-
      self.initializeDatabase = function() {
 
-         var mongoose = require('mongoose');
-
-         var  url = 'mongodb://localhost/molecule';
-         if (process.env.OPENSHIFT_MONGODB_DB_URL)
-         {
-             url = process.env.OPENSHIFT_MONGODB_DB_URL +
-                 process.env.OPENSHIFT_APP_NAME;
-         }
-
-         mongoose.connect(url);
 
 
-         self.app.use(function (req, res, next) {
 
-             // Website you wish to allow to connect
-             res.setHeader('Access-Control-Allow-Origin', "*");
 
-             // Request methods you wish to allow
-             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-             // Request headers you wisgto allow
-             res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-             // Set to true if you need the website to include cookies in the requests sent
-             // to the API (e.g. in case you use sessions)
-             res.setHeader('Access-Control-Allow-Credentials', true);
-
-             // Pass to next layer of middleware
-             next();
-         });
-         self.app.use(express.static(__dirname+'/public'));
-         self.app.get('/', function(req, res){
+         app.get('/', function(req, res){
              res.send('hello world');
          });
 
@@ -208,7 +110,7 @@
          var courseOutcomeCollection = mongoose.model("courseOutcomeSchema", courseOutcomeSchema);
 
 // res/course
-         self.app.get('/rest/course', function(req, res)
+         app.get('/rest/course', function(req, res)
          {
              courseCollection.find({"_id" : "56bb8e4d5ae56c5057000002"}).lean().exec(function(err, results)
              {
@@ -290,14 +192,11 @@
 
          function getSkillDetails(listOfSkillId, callback)
          {
-
              skillCollection.find({"_id" : {$in: listOfSkillId }},function(err, skillResult)
              {
                  callback(skillResult);
-
              });
          }
-
 
          function getJsonObject(id, collection)
          {
@@ -311,7 +210,7 @@
 
 
          //Module Info
-         self.app.get('/rest/module', function(req, res)
+         app.get('/rest/module', function(req, res)
          {
              coursesCollection.find({"_id" : "56cf02d55ae56c248a00000f"}).lean().exec(function(err, results)
              {
@@ -557,22 +456,17 @@
       *  Initializes the sample application.
       */
      self.initialize = function() {
-         self.setupVariables();
          //self.populateCache();
          //self.setupTerminationHandlers();
 
          // Create the express server and routes.
-         self.initializeServer();
          self.initializeDatabase();
      };
 
 
-     /**
-      *  Start the server (starts up the sample application).
-      */
      self.start = function() {
          //  Start the app on the specific interface (and port).
-         self.app.listen(self.port, self.ipaddress, function() {
+         app.listen(port, ipaddress, function() {
              console.log('%s: Node server started on %s:%d ...',
                          Date(Date.now() ), self.ipaddress, self.port);
          });
@@ -582,9 +476,8 @@
 
 
 
- /**
-  *  main():  Main code.
-  */
+ require("./public/server/app.js")(app, mongoose);
+
  var zapp = new SampleApp();
  zapp.initialize();
  zapp.start();
