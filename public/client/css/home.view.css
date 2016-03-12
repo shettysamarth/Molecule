@@ -1,0 +1,17 @@
+.unacquiredSkills
+{
+    background-color: #7f7f7f;
+    border-color: white;
+    border-width: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border-style: solid;
+    margin-left: 3px;
+    margin-right: 1px;
+    margin-bottom: 5px;
+    float: right;
+    position: relative;
+
+
+}
