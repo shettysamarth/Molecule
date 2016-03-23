@@ -27,7 +27,8 @@ module.exports = function(mongoose){
     function findUserByCredentials(credentials) {
         console.log("inside user.model.js findUserByCredentials");
         var deferred = q.defer();
-        console.log(credentials.username + " " + credentials.password);
+        //console.log(credentials);
+        //console.log(credentials.username + " " + credentials.password);
         usersModel.find({email: credentials.username,
             password: credentials.password}, function(err, user){
             console.log("Model output")
@@ -89,7 +90,6 @@ module.exports = function(mongoose){
         console.log("inside user.model.js updateUser");
         var deferred = q.defer();
         console.log("update user userId: "+ userId);
-        //userObj.delete("_id");
         usersModel.update({_id: userId}, {$set: userObj}, function(err, user) {
             if(err) {
                 console.log("Cud not find Usr!!");
