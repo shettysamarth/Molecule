@@ -15,17 +15,55 @@
     <link href="css/login.view.css" rel="stylesheet">
     <link href="css/home.view.css" rel="stylesheet">
     <link href="css/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="angular-snap.css" type="text/css" />
+
 
 
 </head>
-    <body ng-controller="MainController" class="loginBackgroundColor">
 
-    <div ng-include="'view/sidebar/sidebar.view.html'"></div>
-    <div ng-view ></div>
-    <div ng-include="'view/header/header.view.html'"></div>
+
+    <body ng-controller="MainController" class="loginBackgroundColor">
+    <div class="con"></div>
+    <!--<div ng-include="'view/header/header.view.html'"></div>-->
+
+    <snap-drawer>
+            <div ng-controller="SidebarController">
+                <ul class="nav nav-sidebar">
+                    <li ng-class="{'active':$location.path() == '/home'}"><a  href="#/home">Home</a></li>
+                    <li ng-class="{'active':$location.path() == '/profile'}" ng-show="user"><a  href="#/profile">Profile</a></li>
+                    <li ng-class="{'active':$location.path() == '/admin'}" ng-show="user && user.roles && user.roles.indexOf('admin')>0" ><a  href="#/admin">Admin</a></li>
+                    <li ng-class="{'active':$location.path() == '/forms'}" ng-show="user"><a href="#/forms">Forms</a></li>
+
+                    <li ng-class="{'active':$location.path() == '/register'}" ng-show="!user"><a href="#/register">Register</a></li>
+                    <li ng-class="{'active':$location.path() == '/login'}" ng-show="!user"><a href="#/login">Login</a></li>
+                    <li ng-class="{'active':$location.path() == ''}"ng-show="user"><a href="#/profile">{{user.username}}</a></li>
+                    <li ng-class="{'active':$location.path() == ''}"ng-show="user"><a href="" ng-click = "logout()">Logout</a></li>
+                </ul>
+            </div>
+        </snap-drawer>
+
+
+
+    <snap-content class="loginBackgroundColor">
+
+        <div ng-view >
+
+            <button snap-toggle>Toggle Left</button>
+
+        </div>
+
+
+    </snap-content>
+
+
+
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-route.min.js"></script>
+    <script src="snap.js" type="text/javascript" charset="utf-8"></script>
+    <script src="angular-snap.js" type="text/javascript" charset="utf-8"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="js/app.js"></script>
     <script src="config.js"></script>
