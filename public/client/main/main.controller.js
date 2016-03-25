@@ -6,6 +6,6 @@
 
     function  MainController($scope,$location) {
         $scope.$location=$location;
-        $scope.$location.path("/home");
+        $scope.$location.path("/login");
     }
 })();

@@ -1,13 +1,24 @@
-<div ng-controller="SidebarController" class="col-sm-3 col-md-2 sidebar">
+<div ng-controller="SidebarController" class="sideBar">
+
+
+    <img class="sideBarLogoImage" src="/client/images/sideBar/logo.png">
+    <button class="profileImageBtn" onclick="model.loginClicked()">
+        <img class="profileImage" src="/client/images/sideBar/profile.png">
+    </button>
+
+
     <ul class="nav nav-sidebar">
-        <li ng-class="{'active':$location.path() == '/home'}"><a  href="#/home">Home</a></li>
+
+        <li ng-class="{'active':$location.path() == '/login'}" snap-close ng-show="!user"><a  ng-click="loginClicked()">Login</a></li>
+        <li ng-class="{'active':$location.path() == '/register'}" ng-show="!user"><a href="#/register">Register</a></li>
+
+        <li ng-class="{'active':$location.path() == '/home'}" ng-show="user"><a  href="#/home">Home</a></li>
         <li ng-class="{'active':$location.path() == '/profile'}" ng-show="user"><a  href="#/profile">Profile</a></li>
         <li ng-class="{'active':$location.path() == '/admin'}" ng-show="user && user.roles && user.roles.indexOf('admin')>0" ><a  href="#/admin">Admin</a></li>
         <li ng-class="{'active':$location.path() == '/forms'}" ng-show="user"><a href="#/forms">Forms</a></li>
 
-        <li ng-class="{'active':$location.path() == '/register'}" ng-show="!user"><a href="#/register">Register</a></li>
-        <li ng-class="{'active':$location.path() == '/login'}" ng-show="!user"><a href="#/login">Login</a></li>
         <li ng-class="{'active':$location.path() == ''}"ng-show="user"><a href="#/profile">{{user.username}}</a></li>
         <li ng-class="{'active':$location.path() == ''}"ng-show="user"><a href="" ng-click = "logout()">Logout</a></li>
     </ul>
+
 </div>

@@ -13,8 +13,7 @@
                 <img src="/client/images/login/loginLandingImage.png" class="img-responsive" alt="Responsive image">
             </div>
 
-            <h3 class="page-header">Login</h3>
-            <form class="form-horizontal form col-sm-offset-3 col-sm-4 main">
+            <form class="form-horizontal form col-sm-offset-3 col-sm-6 main">
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-3 control-label">Username</label>
                     <div class="col-sm-9">
@@ -27,15 +26,7 @@
                         <input ng-model="user.password" type="password" class="form-control" id="inputPassword3" placeholder="Password">
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-9">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"> Remember me
-                            </label>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <div class="col-sm-offset-1 col-sm-10">
                         <button ng-click="login(user)" type="submit" class="btn btn-block">Sign in</button>
@@ -43,7 +34,7 @@
                 </div>
             </form>
 
-            <div class="col-sm-offset-7 circle"></div>
+            <!--<div class="col-sm-offset-7 circle"></div>-->
 
         </div>
     </div>
