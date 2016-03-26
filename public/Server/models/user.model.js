@@ -41,7 +41,7 @@ module.exports = function(mongoose){
             }
             else
             {
-                deferred.reject(err)
+                deferred.reject(err);
             }
 
         });
@@ -77,6 +77,7 @@ module.exports = function(mongoose){
         usersModel.create(newUser, function(err, doc){
             if(err){
                 console.log("EROORRRRR no new user " + err);
+                deferred.reject(err);
             } else{
                 console.log("New User created: " + doc);
                 deferred.resolve(doc);

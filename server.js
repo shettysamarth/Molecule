@@ -62,12 +62,6 @@
 
 require("./public/Server/app.js")(app, mongoose);
 
-
-
-
-
-
-
          app.get('/', function(req, res) {
              res.send('hello world');
          });
@@ -91,13 +85,13 @@ require("./public/Server/app.js")(app, mongoose);
     	var moduleCollection = mongoose.model("module", ModuleSchema);
 
 
-         var courseSchema = new mongoose.Schema({
-             course_id : String,
-             course_name: String,
-             modules:[]
-         },{collection: "course"});
-
-         var courseCollection = mongoose.model("course", courseSchema);
+         //var courseSchema = new mongoose.Schema({
+         //    course_id : String,
+         //    course_name: String,
+         //    modules:[]
+         //},{collection: "course"});
+         //
+         //var courseCollection = mongoose.model("course", courseSchema);
 
          var skillSchema = new mongoose.Schema({
              skill: String,

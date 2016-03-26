@@ -1,5 +1,5 @@
 module.exports = function(mongoose){
-    var userSchema = mongoose.Schema({
+    var userSchema = new mongoose.Schema({
         "firstName": String,
         "lastName": String,
         "password": String,
