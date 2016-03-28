@@ -1,5 +1,6 @@
 "use strict";
-module.exports = function(){
+var q = require("q");
+module.exports = function(mongoose, moduleModel){
 
     var courseSchema = require("./course.schema.js")(mongoose);
     var courseModel = mongoose.model("courseModel", courseSchema);
@@ -14,6 +15,7 @@ module.exports = function(){
     }
 
     return api;
+    var listOfModules;
 
     function findAllCourse()
     {
@@ -27,7 +29,63 @@ module.exports = function(){
     function getCompleteCourseInfo(courseId)
     {
 
+        var deferred = q.defer();
+        console.log(courseId)
+
+        courseModel.find({"_id" : courseId}).lean().exec(function(err, results)
+        {
+            if(results)
+            {
+                console.log(results);
+                listOfModules = results[0]["modules"];
+                var moduleObjectIds = makeListOfRequiredModuleObjectsIdFromCourseInfo(listOfModules)
+
+                moduleModel.getCompleteModuleInfo(moduleObjectIds)
+                    .then(function (moduleResult) {
+                        console.log("moduleResult");
+
+                        var finalModuleRep = mapModuleToCourses(listOfModules, moduleResult);
+                        console.log("6");
+                        deferred.resolve(finalModuleRep);
+                    })
+            }
+            else
+            {
+               deferred.reject(err);
+            }
+        });
+
+        return deferred.promise;
     }
+
+    function  mapModuleToCourses(courseDetails, modulesArray)
+    {
+        console.log(modulesArray);
+        for (var course in courseDetails)
+        {
+            var module = modulesArray.filter(function(module)
+            {
+                return JSON.stringify(module["_id"]) === JSON.stringify(courseDetails[course]["moduleObjectId"]);
+            });
+            courseDetails[course].moduleInfo = module;
+        }
+        return courseDetails
+    }
+
+
+
+    function makeListOfRequiredModuleObjectsIdFromCourseInfo(listOfModuleDetailsFromCourse)
+    {
+        var moduleObjectIds = [];
+        for(var moduleInfo in listOfModuleDetailsFromCourse)
+        {
+            moduleObjectIds.push(listOfModuleDetailsFromCourse[moduleInfo]["moduleObjectId"]);
+        }
+        return moduleObjectIds;
+    }
+
+
+
 
     function deleteCourse(courseId)
     {

@@ -1,5 +1,6 @@
 "use strict";
-module.exports = function(){
+var q = require("q");
+module.exports = function(mongoose, skillModel){
 
     var learningOutcomeSchema = require("./learning.outcome.schema.js")(mongoose);
     var learningOutcomeModel = mongoose.model("learningOutcomeModel", learningOutcomeSchema);
@@ -24,10 +25,32 @@ module.exports = function(){
         return deferred.promise;
     }
 
-    function getCompleteLearningOutcomeInfo(learningOutcomeId)
+    function getCompleteLearningOutcomeInfo(learningOutcomeIds)
     {
+        console.log(getCompleteLearningOutcomeInfo);
+        var deferred = q.defer();
+        learningOutcomeModel.find({"_id" : {$in : learningOutcomeIds }}).lean().exec(function(err, learninOutcomeRes)
+        {
+            if(learninOutcomeRes)
+            {
+                var listOfSkillIds = extractSkillIdsFromLearningOutcome(learninOutcomeRes);
+                skillModel.getCompleteSkillInfo(listOfSkillIds)
+                .then(function (skillResult) {
+                    var learningOutComeExtendedinfoJson = populateAssociatedSkillsForLearningOutcomes(learninOutcomeRes, skillResult);
 
+                    deferred.resolve(learningOutComeExtendedinfoJson)
+                }, function (err) {
+                    deferred.reject(err);
+                });
+            }
+            else{
+                deferred.reject(err);
+            }
+        });
+        return deferred.promise;
     }
+    
+
 
     function deleteLearningOutcome(learningOutcomeId)
     {
@@ -49,7 +72,6 @@ module.exports = function(){
         console.log("update learningOutcome learningOutcome.model:"+ learningOutcomeId);
         learningOutcomeModel.update({_id: learningOutcomeId}, {$set: learningOutcome}, function(err, learningOutcome) {
             if(err) {
-                console.log("Cud not find Usr!!");
                 deferred.reject(err);
             } else {
                 console.log("Update successful!");
@@ -58,7 +80,6 @@ module.exports = function(){
         });
         return deferred.promise;
     }
-
 
     function createLearningOutcome(learningOutcome)
     {
@@ -87,5 +108,54 @@ module.exports = function(){
             deferred.resolve(learningOutcome);
         });
         return deferred.promise;
+    }
+
+    //Helpers
+
+    function populateAssociatedSkillsForLearningOutcomes(learninOutcomeRes, skillRes)
+    {
+        console.log("learningOutcomeJson");
+
+        var learningOutcomeJson = [];
+        for (var learningOutcomeIndex in learninOutcomeRes)
+        {
+            var learningOutComeObject = learninOutcomeRes[learningOutcomeIndex];
+            var arrayOfSkillDetails = [];
+
+            var listOfSkillIdsOflearningOutComeObject = learningOutComeObject["skills"];
+            for (var skillObjectId in listOfSkillIdsOflearningOutComeObject)
+            {
+                var skillDetail = getJsonObject( listOfSkillIdsOflearningOutComeObject[skillObjectId] ,skillRes)
+                arrayOfSkillDetails = arrayOfSkillDetails.concat(skillDetail)
+            }
+            learningOutComeObject.skillDetails = arrayOfSkillDetails;
+            learningOutcomeJson.push(learningOutComeObject);
+        }
+        return learningOutcomeJson;
+    }
+
+
+    function getJsonObject(id, collection)
+    {
+        var a =  collection.filter(function(x)
+        {
+            return (JSON.stringify(x["_id"]) === JSON.stringify(id))
+        });
+        return a;
+    }
+
+    function extractSkillIdsFromLearningOutcome(learninOutcomeRes){
+        var listOfSkillIds = [];
+        for (var learningOutcome in learninOutcomeRes)
+        {
+            listOfSkillIds = listOfSkillIds.concat(learninOutcomeRes[learningOutcome]["skills"]);
+        }
+        return listOfSkillIds;
+    }
+
+
+    function getSkillInfo(skillIds)
+    {
+        skillModel.getSkillInfo(skillIds).then()
     }
 };

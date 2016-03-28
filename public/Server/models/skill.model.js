@@ -1,5 +1,6 @@
 "use strict";
-module.exports = function(){
+var q = require("q");
+module.exports = function(mongoose){
 
     var skillSchema = require("./skill.schema.js")(mongoose);
     var skillModel = mongoose.model("skillModel", skillSchema);
@@ -24,9 +25,21 @@ module.exports = function(){
         return deferred.promise;
     }
 
-    function getCompleteCourseInfo(skillId)
+    function getCompleteSkillInfo(skillIds)
     {
-
+        console.log(getCompleteSkillInfo)
+        var deferred = q.defer();
+        skillModel.find({"_id" : {$in: skillIds }}).lean().exec(function(err, skillResult)
+        {
+            if(skillResult)
+            {
+                deferred.resolve(skillResult);
+            }
+            else{
+                deferred.reject(err);
+            }
+        });
+        return deferred.promise;
     }
 
     function deleteSkill(skillId)

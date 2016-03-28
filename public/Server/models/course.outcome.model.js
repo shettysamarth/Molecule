@@ -1,21 +1,22 @@
 "use strict";
-module.exports = function(){
+var q = require("q");
+module.exports = function(mongoose){
 
     var courseOutcomeSchema = require("./course.outcome.schema.js")(mongoose);
     var courseOutcomeModel = mongoose.model("courseOutcomeModel", courseOutcomeSchema);
 
     var api = {
-        createLearningOutcome : createLearningOutcome,
-        findLearningOutcomeById : findLearningOutcomeById,
-        updateLearningOutcome : updateLearningOutcome,
-        deleteLearningOutcome : deleteLearningOutcome,
-        getCompleteLearningOutcomeInfo : getCompleteLearningOutcomeInfo,
-        findAllLearningOutcome : findAllLearningOutcome
+        createCourseOutcome : createCourseOutcome,
+        findCourseOutcomeById : findCourseOutcomeById,
+        updateCourseOutcome : updateCourseOutcome,
+        deleteCourseOutcome : deleteCourseOutcome,
+        getCompleteCourseOutcomeInfo : getCompleteCourseOutcomeInfo,
+        findAllCourseOutcome : findAllCourseOutcome
     }
 
     return api;
 
-    function findAllLearningOutcome()
+    function findAllCourseOutcome()
     {
         var deferred = q.defer();
         courseOutcomeModel.find(function(err, courseOutcomes){
@@ -24,10 +25,26 @@ module.exports = function(){
         return deferred.promise;
     }
 
-    function getCompleteCourseOutcomeInfo(courseOutcomeId)
+    function getCompleteCourseOutcomeInfo(courseOutcomeIds)
     {
+        //console.log("courseOutcomeResult");
 
+        var deferred = q.defer();
+        courseOutcomeModel.find({"_id" : {$in: courseOutcomeIds }},{"_id": 1,"outcome": 1 }).lean().exec(function(err, courseOutcomeResult)
+        {
+
+            if(courseOutcomeResult){
+
+                deferred.resolve(courseOutcomeResult);
+            }
+            else{
+                deferred.reject(err);
+            }
+        });
+        return deferred.promise;
     }
+
+
 
     function deleteCourseOutcome(courseOutcomeId)
     {

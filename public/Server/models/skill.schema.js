@@ -3,4 +3,5 @@ module.exports = function (mongoose) {
         skill: String,
         assessment: String
     },{collection: "skill"});
+    return skillSchema;
 };

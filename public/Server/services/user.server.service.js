@@ -9,7 +9,6 @@ module.exports = function(app, userModel){
 
     function login(req, res)
     {
-        console.log(req);
         var username = req.body.user.username;
         var pwd = req.body.user.password;
         var credentials = {
